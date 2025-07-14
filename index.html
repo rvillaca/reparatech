@@ -50,15 +50,17 @@
         }
 
         /* Estilos para o Carrossel de Logotipos Fluido */
-        .logo-carousel-container {
+        .logo-carousel-container, .image-carousel-container {
             overflow: hidden;
             width: 100%;
+            /* Adicionado cursor para indicar que é arrastável */
+            cursor: grab; 
         }
 
-        .logo-carousel-track {
+        .logo-carousel-track, .image-carousel-track {
             display: flex;
             white-space: nowrap; /* Garante que os itens fiquem em uma única linha */
-            animation: scrollLogos 30s linear infinite; /* Ajuste a duração para controlar a velocidade */
+            /* As animações CSS foram removidas e serão controladas via JavaScript */
         }
 
         .logo-carousel-item {
@@ -76,28 +78,7 @@
             object-fit: contain; /* Garante que a imagem se ajuste sem cortar */
         }
 
-        @keyframes scrollLogos {
-            0% {
-                transform: translateX(0);
-            }
-            100% {
-                /* Move exatamente metade da largura total da pista (para 1 duplicação) */
-                transform: translateX(-50%);
-            }
-        }
-
         /* Estilos para o Carrossel de Imagens Fluido */
-        .image-carousel-container {
-            overflow: hidden;
-            width: 100%;
-        }
-
-        .image-carousel-track {
-            display: flex;
-            white-space: nowrap; /* Garante que os itens fiquem em uma única linha */
-            animation: scrollImages 40s linear infinite; /* Ajuste a duração para controlar a velocidade */
-        }
-
         .image-carousel-item {
             flex-shrink: 0;
             width: 100%; /* Cada item ocupa 100% da largura do contêiner */
@@ -114,16 +95,17 @@
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl */
         }
 
-        @keyframes scrollImages {
-            0% {
-                transform: translateX(0);
-            }
-            100% {
-                /* Move exatamente metade da largura total da pista (para 1 duplicação) */
-                transform: translateX(-50%);
-            }
+        /* As keyframes foram mantidas, mas a propriedade 'animation' foi removida dos seletores .logo-carousel-track e .image-carousel-track */
+        /* Elas não serão usadas para a rolagem automática, que agora é controlada por JS. */
+        /* No entanto, se você quiser reativar a animação CSS em algum ponto, elas ainda estão aqui. */
+        @keyframes scrollLogos {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
         }
-
+        @keyframes scrollImages {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
 
         /* Estilos para o Modal */
         .modal-overlay {
@@ -461,8 +443,130 @@
     </div>
 
     <script>
-        // Array de URLs das imagens do carrossel principal.
-        // Certifique-se de que as imagens estão na pasta 'src' do seu repositório GitHub.
+        // Função genérica para inicializar carrosséis com rolagem infinita e arrasto
+        function initInfiniteCarousel(trackId, itemSources, speed, itemWidth = null) {
+            const track = document.getElementById(trackId);
+            let isDragging = false;
+            let startX;
+            let currentTranslateX = 0;
+            let startTranslateX = 0;
+            let animationFrameId;
+
+            // Carrega as imagens no carrossel (duplicando para efeito infinito)
+            function loadCarouselImages() {
+                track.innerHTML = ''; // Limpa o conteúdo existente
+                const duplicatedSources = [...itemSources, ...itemSources]; // Duplica para rolagem infinita
+
+                duplicatedSources.forEach((src, index) => {
+                    const carouselItem = document.createElement('div');
+                    // Adiciona classes específicas para cada tipo de carrossel
+                    if (trackId === 'image-carousel-track') {
+                        carouselItem.classList.add('image-carousel-item');
+                    } else if (trackId === 'logo-carousel-track') {
+                        carouselItem.classList.add('logo-carousel-item');
+                    }
+
+                    const img = document.createElement('img');
+                    img.src = src;
+                    img.alt = `${trackId} Image ${index + 1}`;
+                    img.classList.add('rounded-lg', 'shadow-xl', 'max-w-full', 'h-auto');
+                    // Adiciona um placeholder se a imagem não carregar
+                    img.onerror = `this.onerror=null;this.src='https://placehold.co/${itemWidth ? itemWidth + 'x80' : '800x600'}/FF0000/FFFFFF?text=Erro';`;
+                    
+                    if (trackId === 'logo-carousel-track') {
+                        img.classList.add('h-10', 'md:h-12', 'opacity-75', 'hover:opacity-100', 'transition', 'duration-300');
+                    }
+
+                    carouselItem.appendChild(img);
+                    track.appendChild(carouselItem);
+                });
+            }
+
+            // Inicia a rolagem automática
+            function animateScroll() {
+                // Calcula a largura total do conteúdo do carrossel (incluindo a duplicação)
+                // Usamos scrollWidth, que inclui o conteúdo que está fora da área visível
+                const trackWidth = track.scrollWidth;
+                const containerWidth = track.parentElement.clientWidth; // Largura visível do contêiner
+
+                // Se o trackWidth for 0 (imagens ainda não carregaram ou erro), tenta novamente
+                if (trackWidth === 0) {
+                    animationFrameId = requestAnimationFrame(animateScroll);
+                    return;
+                }
+
+                // Move o carrossel para a esquerda
+                currentTranslateX -= speed;
+
+                // Se o carrossel rolou metade do seu conteúdo (a duplicação), reseta para o início
+                // Isso cria o efeito de rolagem infinita
+                if (currentTranslateX <= -(trackWidth / 2)) {
+                    currentTranslateX = 0;
+                }
+
+                track.style.transform = `translateX(${currentTranslateX}px)`;
+
+                // Continua a animação se não estiver arrastando
+                if (!isDragging) {
+                    animationFrameId = requestAnimationFrame(animateScroll);
+                }
+            }
+
+            // Funções para lidar com o início do arrasto (mouse ou toque)
+            function handleStart(e) {
+                isDragging = true;
+                track.style.cursor = 'grabbing';
+                // Pega a posição X inicial do mouse ou do primeiro toque
+                startX = e.pageX || e.touches[0].pageX;
+                // Obtém a transformação X atual do elemento (se houver)
+                const transformMatch = track.style.transform.match(/translateX\(([-.\d]+)px\)/);
+                startTranslateX = transformMatch ? parseFloat(transformMatch[1]) : 0;
+                // Cancela a animação automática para permitir o arrasto manual
+                cancelAnimationFrame(animationFrameId);
+            }
+
+            // Funções para lidar com o movimento do arrasto (mouse ou toque)
+            function handleMove(e) {
+                if (!isDragging) return;
+                e.preventDefault(); // Previne a rolagem da página ao arrastar no celular
+
+                const x = e.pageX || e.touches[0].pageX;
+                const deltaX = x - startX; // Distância arrastada
+                
+                // Calcula a nova posição de translação
+                currentTranslateX = startTranslateX + deltaX;
+
+                // Aplica a nova posição ao carrossel
+                track.style.transform = `translateX(${currentTranslateX}px)`;
+            }
+
+            // Funções para lidar com o fim do arrasto (mouse ou toque)
+            function handleEnd() {
+                isDragging = false;
+                track.style.cursor = 'grab';
+                // Reinicia a animação automática
+                animateScroll();
+            }
+
+            // Adiciona os event listeners para mouse e toque
+            track.addEventListener('mousedown', handleStart);
+            track.addEventListener('mouseleave', handleEnd); // Se o mouse sair do elemento enquanto arrasta
+            track.addEventListener('mouseup', handleEnd);
+            track.addEventListener('mousemove', handleMove);
+
+            track.addEventListener('touchstart', handleStart);
+            track.addEventListener('touchend', handleEnd);
+            track.addEventListener('touchmove', handleMove);
+
+            // Carrega as imagens e inicia a rolagem
+            loadCarouselImages();
+            // Pequeno atraso para garantir que as imagens carreguem e o scrollWidth seja preciso
+            setTimeout(() => {
+                animateScroll();
+            }, 100); 
+        }
+
+        // Carrossel de Imagens Principal
         const carouselImageSources = [
             'src/carousel-img-1.jpg',
             'src/carousel-img-2.jpg',
@@ -470,37 +574,10 @@
             'src/carousel-img-4.jpg',
             'src/carousel-img-5.jpg'
         ];
+        // Velocidade da rolagem (ajuste conforme necessário)
+        initInfiniteCarousel('image-carousel-track', carouselImageSources, 0.5); 
 
-        const imageCarouselTrack = document.getElementById('image-carousel-track');
-
-        function loadImageCarouselImages() {
-            imageCarouselTrack.innerHTML = '';
-
-            // Duplica as imagens para rolagem infinita (adiciona 2x o array original)
-            const duplicatedImageSources = [...carouselImageSources, ...carouselImageSources];
-
-            duplicatedImageSources.forEach((src, index) => {
-                const imageCarouselItem = document.createElement('div');
-                imageCarouselItem.classList.add('image-carousel-item');
-
-                const img = document.createElement('img');
-                img.src = src;
-                img.alt = `Carousel Image ${index + 1}`;
-                img.classList.add('rounded-lg', 'shadow-xl', 'max-w-full', 'h-auto');
-                // Adiciona um placeholder se a imagem não carregar
-                img.onerror = "this.onerror=null;this.src='https://placehold.co/800x600/FF0000/FFFFFF?text=Erro+Imagem';";
-                imageCarouselItem.appendChild(img);
-                imageCarouselTrack.appendChild(imageCarouselItem);
-            });
-        }
-
-        // Inicializa o carrossel de imagens ao carregar a página
-        loadImageCarouselImages();
-
-
-        // Carrossel de Logotipos - Funcionalidade
-        // Array de URLs das imagens dos logotipos.
-        // Certifique-se de que as imagens estão na pasta 'src' do seu repositório GitHub.
+        // Carrossel de Logotipos
         const logoImageSources = [
             'src/logo-1.png',
             'src/logo-2.png',
@@ -512,32 +589,8 @@
             'src/logo-8.png',
             'src/logo-9.png'
         ];
-
-        const logoCarouselTrack = document.getElementById('logo-carousel-track');
-
-        function loadLogoCarouselImages() {
-            logoCarouselTrack.innerHTML = '';
-
-            // Duplica os logos para rolagem infinita (adiciona 2x o array original)
-            const duplicatedLogoSources = [...logoImageSources, ...logoImageSources];
-
-            duplicatedLogoSources.forEach((src, index) => {
-                const logoCarouselItem = document.createElement('div');
-                logoCarouselItem.classList.add('logo-carousel-item');
-
-                const img = document.createElement('img');
-                img.src = src;
-                img.alt = `Logo ${index + 1}`;
-                img.classList.add('h-10', 'md:h-12', 'opacity-75', 'hover:opacity-100', 'transition', 'duration-300');
-                // Adiciona um placeholder se a imagem não carregar
-                img.onerror = "this.onerror=null;this.src='https://placehold.co/150x80/FF0000/FFFFFF?text=Erro+Logo';";
-                logoCarouselItem.appendChild(img);
-                logoCarouselTrack.appendChild(logoCarouselItem);
-            });
-        }
-
-        // Inicializa o carrossel de logotipos ao carregar a página
-        loadLogoCarouselImages();
+        // Velocidade da rolagem (ajuste conforme necessário)
+        initInfiniteCarousel('logo-carousel-track', logoImageSources, 0.3, 150); // Passamos a largura do item para o placeholder de erro
 
 
         // Carrossel de Depoimentos - Funcionalidade (permanece inalterada)
