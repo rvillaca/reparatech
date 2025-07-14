@@ -11,22 +11,25 @@
     <!-- Font Awesome para ícones (incluindo WhatsApp) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Favicon para o navegador -->
-    <!-- Caminho para o favicon: certifique-se de que 'logo-favicon.png' está na pasta 'src' -->
+    <!-- Caminho para o favicon: certifique-se de que 'logo-favicon.png' está na pasta 'src' na raiz do seu repositório GitHub. -->
+    <!-- Verifique a sensibilidade a maiúsculas/minúsculas do nome do ficheiro e da pasta. -->
     <link rel="icon" type="image/png" href="src/logo-favicon.png">
     <style>
         html, body {
             width: 100%;
-            height: 100%;
+            /* Garante que o corpo da página tenha pelo menos a altura total da viewport para melhor responsividade */
+            min-height: 100vh; 
             margin: 0;
             padding: 0;
-            overflow-x: hidden; /* Evita rolagem horizontal indesejada */
+            overflow-x: hidden; /* Evita rolagem horizontal indesejada em telas pequenas */
         }
         body {
             font-family: 'Inter', sans-serif;
             background-color: #000; /* Fundo escuro para consistência */
         }
         .hero-background {
-            /* URL da imagem de fundo da seção Hero - certifique-se de que 'fundo-hero.jpg' está na pasta 'src' */
+            /* URL da imagem de fundo da seção Hero - certifique-se de que 'fundo-hero.jpg' está na pasta 'src' na raiz do seu repositório GitHub. */
+            /* background-size: cover garante que a imagem cubra a área e se ajuste responsivamente. */
             background-image: url('src/fundo-hero.jpg');
             background-size: cover;
             background-position: center;
@@ -131,14 +134,17 @@
 <body class="text-white">
 
     <!-- Cabeçalho / Navegação -->
+    <!-- Classes como 'fixed w-full z-50' e 'px-6 md:px-12' já garantem que o cabeçalho se adapte à largura da tela. -->
     <header class="bg-gray-900 shadow-lg py-4 px-6 md:px-12 fixed w-full z-50">
         <nav class="container mx-auto flex justify-between items-center">
             <div class="flex items-center"> <!-- Novo contêiner para o logo e o título -->
-                <!-- Logo no cabeçalho - certifique-se de que 'logo-reparatech.png' está na pasta 'src' -->
-                <img src="src/logo-reparatech.png" alt="ReparaTech Logo" class="h-8 md:h-10 mr-3 rounded-md">
+                <!-- Logo no cabeçalho - certifique-se de que 'logo-reparatech.png' está na pasta 'src' na raiz do seu repositório GitHub. -->
+                <!-- O atributo onerror mostrará um placeholder se a imagem não carregar. -->
+                <img src="src/logo-reparatech.png" alt="ReparaTech Logo" class="h-8 md:h-10 mr-3 rounded-md" onerror="this.onerror=null;this.src='https://placehold.co/40x40/FF0000/FFFFFF?text=LOGO';">
                 <div class="text-2xl font-bold text-white">ReparaTech</div>
             </div>
             <div class="flex items-center space-x-4">
+                <!-- 'hidden md:block' esconde este texto em telas pequenas e mostra em telas médias e maiores. -->
                 <span class="text-gray-300 hidden md:block">Entre em contato:</span>
                 <!-- Botão WhatsApp no cabeçalho -->
                 <a href="https://wa.me/5544998467799" target="_blank" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-md transition duration-300 flex items-center space-x-2">
@@ -150,7 +156,7 @@
                     E-mail
                 </button>
             </div>
-            <!-- Botão de menu para mobile -->
+            <!-- Botão de menu para mobile - 'md:hidden' garante que ele só apareça em telas pequenas. -->
             <button class="md:hidden text-white focus:outline-none">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
             </button>
@@ -158,9 +164,12 @@
     </header>
 
     <!-- Seção Hero -->
+    <!-- 'h-screen' faz com que a seção ocupe a altura total da tela. As classes de texto e espaçamento são responsivas. -->
     <section class="hero-background h-screen flex items-center justify-center text-center pt-16">
         <div class="bg-black bg-opacity-70 p-8 rounded-lg max-w-3xl mx-auto">
+            <!-- Tamanho da fonte responsivo: 'text-5xl' para mobile, 'md:text-6xl' para médio e maior. -->
             <h1 class="text-5xl md:text-6xl font-extrabold leading-tight tracking-wide mb-4">Assistência Técnica em Equipamentos Eletrônicos e Odontológicos</h1>
+            <!-- Tamanho da fonte responsivo: 'text-lg' para mobile, 'md:text-xl' para médio e maior. -->
             <p class="text-lg md:text-xl text-gray-100 leading-relaxed mb-8">
                 Confie nas Soluções ReparaTech para reparos superiores em aparelhos dentários em Umuarama.
                 Experimente precisão e qualidade inigualáveis hoje.
@@ -188,26 +197,27 @@
     <section class="section-background-dark py-16 px-6">
         <div class="container mx-auto text-center">
             <h2 class="text-4xl font-bold mb-12 text-white">Restaure Aparelhos Sem Esforço</h2>
+            <!-- Layout de grid responsivo: 1 coluna em mobile, 3 colunas em telas médias e maiores. -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Cartão de Serviço 1 - certifique-se de que 'servico1.jpg' está na pasta 'src' -->
+                <!-- Cartão de Serviço 1 - certifique-se de que 'servico1.jpg' está na pasta 'src' na raiz do seu repositório GitHub. -->
                 <div class="bg-gray-800 rounded-lg shadow-xl overflow-hidden p-6">
-                    <img src="src/servico1.jpg" alt="Precision Dental Appliance Repair" class="w-full h-64 object-cover rounded-md mb-6">
+                    <img src="src/servico1.jpg" alt="Precision Dental Appliance Repair" class="w-full h-64 object-cover rounded-md mb-6" onerror="this.onerror=null;this.src='https://placehold.co/600x400/FF0000/FFFFFF?text=Servico+1';">
                     <h3 class="text-2xl font-semibold mb-3 text-white">Reparo de Aparelhos Dentários de Precisão</h3>
                     <p class="text-gray-400">
                         Reparo especializado para seus aparelhos dentários, garantindo que funcionem como novos.
                     </p>
                 </div>
-                <!-- Cartão de Serviço 2 - certifique-se de que 'servico2.jpg' está na pasta 'src' -->
+                <!-- Cartão de Serviço 2 - certifique-se de que 'servico2.jpg' está na pasta 'src' na raiz do seu repositório GitHub. -->
                 <div class="bg-gray-800 rounded-lg shadow-xl overflow-hidden p-6">
-                    <img src="src/servico2.jpg" alt="Efficient Electronic Plate Restoration" class="w-full h-64 object-cover rounded-md mb-6">
+                    <img src="src/servico2.jpg" alt="Efficient Electronic Plate Restoration" class="w-full h-64 object-cover rounded-md mb-6" onerror="this.onerror=null;this.src='https://placehold.co/600x400/FF0000/FFFFFF?text=Servico+2';">
                     <h3 class="text-2xl font-semibold mb-3 text-white">Restauração Eficiente de Placas Eletrônicas</h3>
                     <p class="text-gray-400">
                         Restauração rápida e confiável de placas eletrônicas para maximizar sua vida útil e eficiência.
                     </p>
                 </div>
-                <!-- Cartão de Serviço 3 - certifique-se de que 'servico3.jpg' está na pasta 'src' -->
+                <!-- Cartão de Serviço 3 - certifique-se de que 'servico3.jpg' está na pasta 'src' na raiz do seu repositório GitHub. -->
                 <div class="bg-gray-800 rounded-lg shadow-xl overflow-hidden p-6">
-                    <img src="src/servico3.jpg" alt="Advanced Diagnostic and Testing" class="w-full h-64 object-cover rounded-md mb-6">
+                    <img src="src/servico3.jpg" alt="Advanced Diagnostic and Testing" class="w-full h-64 object-cover rounded-md mb-6" onerror="this.onerror=null;this.src='https://placehold.co/600x400/FF0000/FFFFFF?text=Servico+3';">
                     <h3 class="text-2xl font-semibold mb-3 text-white">Diagnóstico e Testes Avançados</h3>
                     <p class="text-gray-400">
                         Diagnósticos de ponta para identificar e resolver problemas em seus dispositivos.
@@ -217,11 +227,13 @@
         </div>
     </section>
 
-    <!-- Seção Sobre - certifique-se de que 'sobre.jpg' está na pasta 'src' -->
+    <!-- Seção Sobre -->
+    <!-- Layout responsivo: coluna em mobile, linha em telas médias e maiores. -->
     <section class="section-background-dark py-16 px-6">
         <div class="container mx-auto flex flex-col md:flex-row items-center gap-12">
             <div class="md:w-1/2">
-                <img src="src/sobre.jpg" alt="Precision Repairs for Dental Excellence" class="w-full h-auto rounded-lg shadow-xl">
+                <!-- Imagem responsiva: 'w-full h-auto' garante que a imagem se ajuste à largura e mantenha a proporção. -->
+                <img src="src/sobre.jpg" alt="Precision Repairs for Dental Excellence" class="w-full h-auto rounded-lg shadow-xl" onerror="this.onerror=null;this.src='https://placehold.co/600x400/FF0000/FFFFFF?text=Sobre+Nos';">
             </div>
             <div class="md:w-1/2 text-center md:text-left">
                 <h2 class="text-4xl font-bold mb-6 text-white">Reparos de Precisão para Excelência Odontológica</h2>
@@ -252,10 +264,11 @@
     <section class="section-background-light py-16 px-6 text-gray-900">
         <div class="container mx-auto text-center">
             <h2 class="text-4xl font-bold mb-12">Nossos Diferenciais</h2>
+            <!-- Layout de grid responsivo: 1 coluna em mobile, 3 colunas em telas médias e maiores. -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Cartão de Diferencial 1: Expertise Técnica - certifique-se de que 'diferencial1.jpg' está na pasta 'src' -->
+                <!-- Cartão de Diferencial 1: Expertise Técnica - certifique-se de que 'diferencial1.jpg' está na pasta 'src' na raiz do seu repositório GitHub. -->
                 <div class="bg-white rounded-lg shadow-xl overflow-hidden p-6 relative">
-                    <img src="src/diferencial1.jpg" alt="Expertise Técnica" class="w-full h-64 object-cover rounded-md mb-6">
+                    <img src="src/diferencial1.jpg" alt="Expertise Técnica" class="w-full h-64 object-cover rounded-md mb-6" onerror="this.onerror=null;this.src='https://placehold.co/600x400/FF0000/FFFFFF?text=Diferencial+1';">
                     <h3 class="text-2xl font-semibold mb-3">Expertise Técnica Comprovada</h3>
                     <p class="text-gray-600 mb-4">
                         Nossa equipe é formada por especialistas altamente qualificados e com vasta experiência em reparos de equipamentos eletrônicos e odontológicos. Garantimos diagnósticos precisos e soluções eficazes.
@@ -265,9 +278,9 @@
                         <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>Anos de Experiência</li>
                     </ul>
                 </div>
-                <!-- Cartão de Diferencial 2: Agilidade e Eficiência - certifique-se de que 'diferencial2.jpg' está na pasta 'src' -->
+                <!-- Cartão de Diferencial 2: Agilidade e Eficiência - certifique-se de que 'diferencial2.jpg' está na pasta 'src' na raiz do seu repositório GitHub. -->
                 <div class="bg-white rounded-lg shadow-xl overflow-hidden p-6 relative">
-                    <img src="src/diferencial2.jpg" alt="Agilidade e Eficiência" class="w-full h-64 object-cover rounded-md mb-6">
+                    <img src="src/diferencial2.jpg" alt="Agilidade e Eficiência" class="w-full h-64 object-cover rounded-md mb-6" onerror="this.onerror=null;this.src='https://placehold.co/600x400/FF0000/FFFFFF?text=Diferencial+2';">
                     <h3 class="text-2xl font-semibold mb-3">Agilidade e Eficiência no Serviço</h3>
                     <p class="text-gray-600 mb-4">
                         Entendemos a importância do seu tempo. Nossos processos otimizados garantem reparos rápidos sem comprometer a qualidade, minimizando o tempo de inatividade dos seus equipamentos.
@@ -277,9 +290,9 @@
                         <li class="flex items-center"><svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>Processos Otimizados</li>
                     </ul>
                 </div>
-                <!-- Cartão de Diferencial 3: Garantia de Qualidade - certifique-se de que 'diferencial3.jpg' está na pasta 'src' -->
+                <!-- Cartão de Diferencial 3: Garantia de Qualidade - certifique-se de que 'diferencial3.jpg' está na pasta 'src' na raiz do seu repositório GitHub. -->
                 <div class="bg-white rounded-lg shadow-xl overflow-hidden p-6 relative">
-                    <img src="src/diferencial3.jpg" alt="Garantia de Qualidade" class="w-full h-64 object-cover rounded-md mb-6">
+                    <img src="src/diferencial3.jpg" alt="Garantia de Qualidade" class="w-full h-64 object-cover rounded-md mb-6" onerror="this.onerror=null;this.src='https://placehold.co/600x400/FF0000/FFFFFF?text=Diferencial+3';">
                     <h3 class="text-2xl font-semibold mb-3">Garantia de Qualidade e Durabilidade</h3>
                     <p class="text-gray-600 mb-4">
                         Comprometemo-nos com a excelência em cada reparo. Utilizamos peças de alta qualidade e técnicas avançadas para assegurar que seus equipamentos tenham uma vida útil prolongada e desempenho superior.
@@ -468,6 +481,8 @@
                 img.src = src;
                 img.alt = `Carousel Image ${index + 1}`;
                 img.classList.add('rounded-lg', 'shadow-xl', 'max-w-full', 'h-auto');
+                // Adiciona um placeholder se a imagem não carregar
+                img.onerror = "this.onerror=null;this.src='https://placehold.co/800x600/FF0000/FFFFFF?text=Erro+Imagem';";
                 imageCarouselItem.appendChild(img);
                 imageCarouselTrack.appendChild(imageCarouselItem);
             });
@@ -508,6 +523,8 @@
                 img.src = src;
                 img.alt = `Logo ${index + 1}`;
                 img.classList.add('h-10', 'md:h-12', 'opacity-75', 'hover:opacity-100', 'transition', 'duration-300');
+                // Adiciona um placeholder se a imagem não carregar
+                img.onerror = "this.onerror=null;this.src='https://placehold.co/150x80/FF0000/FFFFFF?text=Erro+Logo';";
                 logoCarouselItem.appendChild(img);
                 logoCarouselTrack.appendChild(logoCarouselItem);
             });
