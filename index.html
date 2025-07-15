@@ -121,7 +121,7 @@
             background-color: rgba(0, 0, 0, 0.7); /* Fundo semi-transparente para o texto */
             padding: 2rem;
             border-radius: 0.5rem;
-            max-width: 90%; /* Ajuste para melhor responsividade */
+            /* max-width: 90%; Removido para controle mais fino */
             margin: 0 auto; /* Centraliza o overlay */
         }
 
@@ -170,7 +170,7 @@
         </div>
 
         <!-- Conteúdo de Texto da Seção Hero (Overlay) -->
-        <div class="hero-content-overlay flex flex-col items-center justify-center h-full">
+        <div class="hero-content-overlay flex flex-col items-center justify-center h-full w-11/12 md:w-2/3 lg:w-1/2">
             <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight tracking-wide mb-4">Assistência Técnica em Equipamentos Eletrônicos e Odontológicos</h1>
             <p class="text-base sm:text-lg md:text-xl text-gray-100 leading-relaxed mb-8">
                 Confie nas soluções da ReparaTech para reparo eletrônicos no geral e em aparelhos dentários em Umuarama.
@@ -568,8 +568,10 @@
         // NOVO Carrossel da Seção Hero (sem setas)
         const heroImageSources = [
             'src/fundo-hero-1.jpg', // Primeira imagem para o carrossel Hero
-            'src/fundo-hero-2.jpg', // Segunda imagem
-            'src/fundo-hero-3.jpg'  // Terceira imagem
+            'src/fundo-hero-2.jpg', 
+            'src/fundo-hero-3.jpg', 
+            'src/fundo-hero-4.jpg', 
+            'src/fundo-hero-5.jpg'
         ];
         const heroTrack = document.getElementById('hero-carousel-track');
         // Removidas as referências aos botões de navegação
