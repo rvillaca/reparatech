@@ -343,29 +343,34 @@
     <section id="contact-section" class="section-background-dark py-16 px-6">
         <div class="container mx-auto text-white">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-                <div>
+                <div class="flex flex-col"> <!-- Adicionado flex-col para organizar os elementos em coluna -->
                     <h2 class="text-4xl font-bold mb-6">Entre em Contato para Reparos Especializados</h2>
-                    <p class="text-lg text-gray-400">
+                    <p class="text-lg text-gray-400 mb-8">
                         Entre em contato com a ReparaTech Solutions em Umuarama para todas as suas necessidades de reparo de aparelhos dentários e placas eletrônicas.
                     </p>
+                    <!-- Botão WhatsApp na seção de contato, fora do formulário -->
+                    <a href="https://wa.me/5544998467799?text=Olá,%20vim%20pelo%20site,%20preciso%20de%20ajuda!" target="_blank" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition duration-300 flex items-center justify-center space-x-2 w-full md:w-auto mt-4">
+                        <i class="fab fa-whatsapp text-lg"></i>
+                        <span>Fale Conosco via WhatsApp</span>
+                    </a>
                 </div>
-                <form action="mailto:seuemail@example.com" method="post" enctype="text/plain" class="space-y-6">
+                <!-- Formulário de Contato: action apontando para o Formspree endpoint -->
+                <form id="contactForm" action="https://formspree.io/f/myzpyepo" method="POST" class="space-y-6">
                     <div>
                         <label for="name" class="block text-sm font-medium text-gray-300">Nome</label>
-                        <input type="text" id="name" name="name" class="mt-1 block w-full p-3 bg-gray-800 border border-gray-700 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-white">
+                        <input type="text" id="name" name="name" class="mt-1 block w-full p-3 bg-gray-800 border border-gray-700 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-white" required>
                     </div>
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-300">Email</label>
-                        <input type="email" id="email" name="email" class="mt-1 block w-full p-3 bg-gray-800 border border-gray-700 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-white">
+                        <input type="email" id="email" name="_replyto" class="mt-1 block w-full p-3 bg-gray-800 border border-gray-700 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-white" required>
                     </div>
                     <div>
                         <label for="message" class="block text-sm font-medium text-gray-300">Mensagem</label>
-                        <textarea id="message" name="message" rows="4" class="mt-1 block w-full p-3 bg-gray-800 border border-gray-700 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-white"></textarea>
+                        <textarea id="message" name="message" rows="4" class="mt-1 block w-full p-3 bg-gray-800 border border-gray-700 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-white" required></textarea>
                     </div>
-                    <a href="https://wa.me/5544998467799?text=Olá,%20vim%20pelo%20site,%20preciso%20de%20ajuda!" target="_blank" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition duration-300 flex items-center justify-center space-x-2 w-full">
-                        <i class="fab fa-whatsapp text-lg"></i>
-                        <span>Enviar via WhatsApp</span>
-                    </a>
+                    <!-- Mensagem de sucesso/erro após o envio -->
+                    <div id="formStatusMessage" class="hidden py-3 px-4 rounded-md text-center font-semibold"></div>
+                    
                     <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold py-3 px-8 rounded-lg shadow-lg transition duration-300 w-full">
                         Enviar Mensagem
                     </button>
@@ -733,6 +738,53 @@
                 document.getElementById('contact-section').scrollIntoView({ behavior: 'smooth' });
             });
         }
+
+        // Lógica de envio do formulário Formspree
+        const contactForm = document.getElementById('contactForm');
+        const formStatusMessage = document.getElementById('formStatusMessage');
+
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Impede o envio padrão do formulário
+
+            const formData = new FormData(contactForm);
+            try {
+                const response = await fetch(contactForm.action, {
+                    method: contactForm.method,
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json' // Importante para o Formspree retornar JSON
+                    }
+                });
+
+                if (response.ok) {
+                    formStatusMessage.classList.remove('hidden', 'bg-red-500');
+                    formStatusMessage.classList.add('bg-green-500', 'text-gray-900');
+                    formStatusMessage.textContent = 'Mensagem enviada com sucesso! Entraremos em contato em breve.';
+                    contactForm.reset(); // Limpa o formulário
+                } else {
+                    const data = await response.json();
+                    if (Object.hasOwnProperty.call(data, 'errors')) {
+                        formStatusMessage.classList.remove('hidden', 'bg-green-500');
+                        formStatusMessage.classList.add('bg-red-500', 'text-white');
+                        formStatusMessage.textContent = 'Erro ao enviar mensagem: ' + data["errors"].map(error => error["message"]).join(", ");
+                    } else {
+                        formStatusMessage.classList.remove('hidden', 'bg-green-500');
+                        formStatusMessage.classList.add('bg-red-500', 'text-white');
+                        formStatusMessage.textContent = 'Erro ao enviar mensagem. Tente novamente.';
+                    }
+                }
+            } catch (error) {
+                formStatusMessage.classList.remove('hidden', 'bg-green-500');
+                formStatusMessage.classList.add('bg-red-500', 'text-white');
+                formStatusMessage.textContent = 'Ocorreu um erro na conexão. Tente novamente mais tarde.';
+                console.error('Erro ao enviar formulário:', error);
+            } finally {
+                // Opcional: Esconder a mensagem após alguns segundos
+                setTimeout(() => {
+                    formStatusMessage.classList.add('hidden');
+                }, 5000); // Esconde após 5 segundos
+            }
+        });
     </script>
 </body>
 </html>
